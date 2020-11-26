@@ -1,6 +1,6 @@
 #include "sorting.h"
 
-void genData(int n, vector<int> &toRet) {
+void genData(int n, vector<int>& toRet) {
 
 	srand(time(NULL));
 	for (int i = 0; i < n; ++i) {
@@ -8,45 +8,51 @@ void genData(int n, vector<int> &toRet) {
 	}
 }
 
-void swap(vector<int>& userVector, int i, int j) {
-	int temp = userVector.at(i);
-	userVector.at(i) = userVector.at(j);
-	userVector.at(j) = temp;
-	return;
-}
+void insertionSort(vector<int>& userVec)
+{
+	int firstOutOfOrder, location;
+	int length = userVec.size(), temp;
 
-void insertionSort(vector<int>& userVector) {
-	for (unsigned int i = 1; i < userVector.size(); i++) {
-		int j, v = userVector.at(i);
-		for (j = i - 1; j >= 0; j--) {
-			if (userVector.at(j) < v) {
-				break;
-			}
-			userVector.at(j + 1) = userVector.at(j);
+	for (firstOutOfOrder = 1; firstOutOfOrder < length; firstOutOfOrder++)
+	{
+		if (userVec[firstOutOfOrder] < userVec[firstOutOfOrder - 1])
+		{
+			temp = userVec[firstOutOfOrder];
+			location = firstOutOfOrder;
+
+			do
+			{
+				userVec[location] = userVec[location - 1];
+				location--;
+			} while (location > 0 && userVec[location - 1] > temp);
+			userVec[location] = temp;
 		}
-		userVector.at(j + 1) = v;
 	}
-	return;
+
 }
 
-vector<int> SelectionSort(vector<int> userVector) {
-	for (int i = 0; i < userVector.size(); ++i) {
-		int min = i;
-		for (int j = userVector.size() - 1; j > i; --j) {
-			if (userVector.at(j) < userVector.at(min)) {
-				min = j;
+void SelectionSort(vector<int>& userVec)
+{
+	int smallest = 0, length = userVec.size(), holdData;
+
+	for (int current = 0; current < length - 1; current++)
+	{
+		smallest = current;
+		for (int index = current + 1; index <= length - 1; index++)
+		{
+			if (userVec[index] < userVec[smallest])
+			{
+				swap(userVec[smallest], userVec[index]);
 			}
 		}
-		int temp = userVector.at(i);
-		userVector.at(i) = userVector.at(min);
-		userVector.at(min) = temp;
 	}
-	return userVector;
+
 }
 
-vector<int> bubble(vector<int> arr, int n) {
+void bubble(vector<int>& arr)
+{
 	bool flag = false;
-	int last = n - 1;
+	int last = arr.size() - 1;
 
 	while (!flag) {
 		bool flag = true;
@@ -57,7 +63,8 @@ vector<int> bubble(vector<int> arr, int n) {
 			}
 		}
 		last--;
-		if (last == 0)return arr;
+		if (last == 0)
+			return;
 	}
 }
 
@@ -123,16 +130,6 @@ void mergeSort(vector<int>& userVector, int lo, int hi) {
 		mergeSort(userVector, mid + 1, hi);
 		merge(userVector, lo, mid, hi);
 	}
-}
-
-void swap(int& lhs, int& rhs)
-{
-	int temp;
-
-	temp = lhs;
-	lhs = rhs;
-	rhs = temp;
-
 }
 
 int partition(vector<int>& userVector, int low, int high)
@@ -203,65 +200,89 @@ void heapSort(vector<int>& userVector)
 }
 
 
-int FindMax(vector<int>userVector) {
-	int max = 0;
-	for (int i = 0; i < userVector.size(); ++i) {//finds the maximum value from the vector
-		if (userVector.at(i) > max) {
-			max = i;
-		}
+void CountSort(vector<int>& userVec)
+{
+	int size = userVec.size();
+	int max = *max_element(userVec.begin(), userVec.end());
+	int* outArr = new int[size];
+	int* auxArr = new int[max + 1];
+
+	for (int i = 0; i <= max; i++)
+	{
+		auxArr[i] = 0;
 	}
-	return max;
+
+
+	for (int i = 0; i < size; i++)
+	{
+		auxArr[userVec[i]]++;
+	}
+
+	for (int i = 1; i <= max; i++)
+	{
+		auxArr[i] += auxArr[i - 1];
+	}
+
+	for (int i = size - 1; i >= 0; i--)
+	{
+		outArr[--auxArr[userVec[i]]] = userVec[i];
+	}
+
+	for (int i = 0; i < size; i++)
+	{
+		userVec[i] = outArr[i];
+	}
+
+	delete[] outArr;
+	delete[] auxArr;
+
 }
 
-vector<int> CountSort(vector<int>userVector) {
-	vector<int>output(userVector.size());
-	int max = FindMax(userVector);
-	int temp = userVector.at(max);
+void RadixSort(vector<int>& userVec)
+{
+	const int BASE = 10;
+	int size = userVec.size();
+	int max = *max_element(userVec.begin(), userVec.end());
 
-	vector<int>aux(10, 0);//auxiliary array for the digit
-	for (int j = 0; j < userVector.size(); ++j) {
-		++aux.at(userVector.at(j));//stores the amount of times a number shows up at the certain digit
-	}
-	for (int j = 1; j < aux.size(); ++j) {//adds the counts together
-		aux.at(j) += aux.at(j - 1);
-	}
-	for (int j = userVector.size() - 1; j >= 0; --j) {
-		int a = aux.at(userVector.at(j));//finds the aux count for the value at digit i
-		int b = (userVector.at(j));
-		output.at(a - 1) = userVector.at(j);//adds the value for digit i to output
-		--aux.at(b);//decrements the digit i count
+	int numDigits = 1, tmp = 10;
+	while (max / tmp > 0)
+	{
+		numDigits++;
+		tmp *= 10;
 	}
 
-	return output;
-}
+	int* outArr = new int[size];
+	int pos = 1;
 
-vector<int> RadixSort(vector<int>userVector) {
-	vector<int>output(userVector.size());
-	int max = FindMax(userVector);
-	int temp = userVector.at(max);
-	int digits = 1;
+	for (int i = 1; i <= numDigits; i++)
+	{
 
-	while (temp / 10 >= 1) {//finds the number of digits for the max number
-		++digits;
-		temp /= 10;
-	}
+		int auxArr[BASE] = { 0 };
 
-	for (int i = 1; i <= digits; ++i) {
-		vector<int>aux(10, 0);//auxiliary array for the digit
-		int digitMod = pow(10, i);
-		for (int j = 0; j < userVector.size(); ++j) {
-			++aux.at((userVector.at(j) % digitMod) / (pow(10, (i - 1))));//stores the amount of times a number shows up at the certain digit
+		for (int j = 0; j < size; j++)
+		{
+			auxArr[userVec[j] / pos % 10]++;
 		}
-		for (int j = 1; j < aux.size(); ++j) {//adds the counts together
-			aux.at(j) += aux.at(j - 1);
+
+		for (int j = 1; j < BASE; j++)
+		{
+			auxArr[j] += auxArr[j - 1];
 		}
-		for (int j = userVector.size() - 1; j >= 0; --j) {
-			int a = aux.at((userVector.at(j) % digitMod) / (pow(10, (i - 1))));//finds the aux count for the value at digit i
-			int b = (userVector.at(j) % digitMod) / (pow(10, (i - 1)));
-			output.at(a - 1) = userVector.at(j);//adds the value for digit i to output
-			--aux.at(b);//decrements the digit i count
+
+
+		for (int j = size - 1; j >= 0; j--)
+		{
+			outArr[--auxArr[userVec[j] / pos % 10]] = userVec[j];
 		}
-		userVector = output;
+
+
+		for (int i = 0; i < size; i++)
+		{
+			userVec[i] = outArr[i];
+		}
+
+		pos *= 10;
 	}
-	return output;
+
+	delete[] outArr;
 }

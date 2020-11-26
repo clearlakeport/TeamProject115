@@ -1,141 +1,88 @@
 #include "sorting.h"
 
-int main() {
-	clock_t functionTime;
+int main()
+{
+	for (int i = 0; i <= 3; i++)
+	{
+		int dataSize = SIZE * pow(10, i);
 
-	int dataSize;
-	int userChoice = 99;
+		vector<int> sortDataOrig, sortDataCopy;
+		chrono::high_resolution_clock::time_point start, end;
+		chrono::duration<double> runTime;
 
-	vector <int> sortDataOrig;
-	vector <int> sortDataCopy;
 
-	cout << "Insert size of data to be sorted:\n";
-	cin >> dataSize;
+		genData(dataSize, sortDataOrig);
 
-	genData(dataSize, sortDataOrig);
-
-	system("cls");
-
-	while (userChoice != 0) {
-		cout << "Data size: " << dataSize << endl;
-		cout << "1: Insertion\n2: Selection\n3: Bubble\n4: Merge\n5: Quick\n6: Heap\n7: Counting\n8: Radix\n9: Change Data\n0: Exit\n";
-		cin >> userChoice;
-		if (userChoice == 1) {
-			system("cls");
+		if (dataSize <= 100000)
+		{
+			// too slow to run for more than 100,000 numbers
 			sortDataCopy = sortDataOrig;
 			cout << "Insertion Sort\nData Size: " << dataSize << endl;
-			auto start = chrono::high_resolution_clock::now();
+			start = chrono::high_resolution_clock::now();
 			insertionSort(sortDataCopy);
-			auto end = chrono::high_resolution_clock::now();
-			chrono::duration<float> time = end - start;
-			cout << "Time elapsed: " << time.count() << " seconds\n";
-			cout << "Press any key to exit";
-			_getch();
-			system("cls");
-		}
-		else if (userChoice == 2) {
-			system("cls");
+			end = chrono::high_resolution_clock::now();
+			runTime = end - start;
+			cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
+
 			sortDataCopy = sortDataOrig;
 			cout << "Selection Sort\nData Size: " << dataSize << endl;
-			functionTime = clock();
-			sortDataCopy = SelectionSort(sortDataCopy);
-			functionTime = clock() - functionTime;
-			cout << "Time elapsed: " << (float)functionTime / CLOCKS_PER_SEC << " seconds\n";
-			cout << "Press any key to exit";
-			_getch();
-			system("cls");
-		}
-		else if (userChoice == 3) {//fix bubble
-			system("cls");
+			start = chrono::high_resolution_clock::now();
+			SelectionSort(sortDataCopy);
+			end = chrono::high_resolution_clock::now();
+			runTime = end - start;
+			cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
+
 			sortDataCopy = sortDataOrig;
 			cout << "Bubble Sort\nData Size: " << dataSize << endl;
-			functionTime = clock();
-			sortDataCopy = bubble(sortDataCopy, dataSize);
-			functionTime = clock() - functionTime;
-			cout << "Time elapsed: " << (float)functionTime / CLOCKS_PER_SEC << " seconds\n";
-			cout << "Press any key to exit";
-			_getch();
-			system("cls");
+			start = chrono::high_resolution_clock::now();
+			bubble(sortDataCopy);
+			end = chrono::high_resolution_clock::now();
+			runTime = end - start;
+			cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
 		}
-		else if (userChoice == 4) {//fix
-			system("cls");
-			sortDataCopy = sortDataOrig;
-			cout << "Merge Sort\nData Size: " << dataSize << endl;
-			auto start = chrono::high_resolution_clock::now();
-			mergeSort(sortDataCopy, 0, sortDataCopy.size() - 1);
-			auto end = chrono::high_resolution_clock::now();
-			chrono::duration<float> time = end - start;
-			cout << "Time elapsed: " << time.count() << " seconds\n";
-			cout << "Press any key to exit";
-			_getch();
-			system("cls");
-		}
-		else if (userChoice == 5) {
-			system("cls");
-			sortDataCopy = sortDataOrig;
-			cout << "Quick Sort\nData Size: " << dataSize << endl;
-			auto start = chrono::high_resolution_clock::now();
-			quickSort(sortDataCopy, 0, sortDataCopy.size() - 1);
-			auto end = chrono::high_resolution_clock::now();
-			chrono::duration<float> time = end - start;
-			cout << "Time elapsed: " << time.count() << " seconds\n";
-			cout << "Press any key to exit";
-			_getch();
-			system("cls");
-		}
-		else if (userChoice == 6) {
-			system("cls");
-			sortDataCopy = sortDataOrig;
-			cout << "Heap Sort\nData Size: " << dataSize << endl;
-			auto start = chrono::high_resolution_clock::now();
-			heapSort(sortDataCopy);
-			auto end = chrono::high_resolution_clock::now();
-			chrono::duration<float> time = end - start;
-			cout << "Time elapsed: " << time.count() << " seconds\n";
-			/*for(vector<int>::iterator itr = sortDataCopy.begin(); itr != sortDataCopy.end(); itr++)
-			{
-				cout << *itr << " ";
-			}*/
-			cout << endl;
-			cout << "Press any key to exit";
-			_getch();
-			system("cls");
-		}
-		else if (userChoice == 7) {
-			system("cls");
-			sortDataCopy = sortDataOrig;
-			cout << "Counting Sort\nData Size: " << dataSize << endl;
-			functionTime = clock();
-			sortDataCopy = CountSort(sortDataCopy);
-			functionTime = clock() - functionTime;
-			cout << "Time elapsed: " << (float)functionTime / CLOCKS_PER_SEC << " seconds\n";
-			cout << "Press any key to exit";
-			_getch();
-			system("cls");
-		}
-		else if (userChoice == 8) {
-			system("cls");
-			sortDataCopy = sortDataOrig;
-			cout << "Radix Sort\nData Size: " << dataSize << endl;
-			functionTime = clock();
-			sortDataCopy = RadixSort(sortDataCopy);
-			functionTime = clock() - functionTime;
-			cout << "Time elapsed: " << (float)functionTime / CLOCKS_PER_SEC << " seconds\n";
-			cout << "Press any key to exit";
-			_getch();
-			system("cls");
-		}
-		else if (userChoice == 9) {
-			system("cls");
-			cout << "Insert size of data to be sorted:\n";
-			cin >> dataSize;
-			system("cls");
-		}
-		else if (userChoice == 0) {
-			return 0;
-		}
-		else {
-			system("cls");
-		}
+
+
+		sortDataCopy = sortDataOrig;
+		cout << "Quick Sort\nData Size: " << dataSize << endl;
+		start = chrono::high_resolution_clock::now();
+		quickSort(sortDataCopy, 0, sortDataCopy.size() - 1);
+		end = chrono::high_resolution_clock::now();
+		runTime = end - start;
+		cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
+
+		cout << "Merge Sort\nData Size: " << dataSize << endl;
+		start = chrono::high_resolution_clock::now();
+		mergeSort(sortDataCopy, 0, sortDataCopy.size() - 1);
+		end = chrono::high_resolution_clock::now();
+		runTime = end - start;
+		cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
+
+		sortDataCopy = sortDataOrig;
+		cout << "Heap Sort\nData Size: " << dataSize << endl;
+		start = chrono::high_resolution_clock::now();
+		heapSort(sortDataCopy);
+		end = chrono::high_resolution_clock::now();
+		runTime = end - start;
+		cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
+
+		sortDataCopy = sortDataOrig;
+		cout << "Counting Sort\nData Size: " << dataSize << endl;
+		start = chrono::high_resolution_clock::now();
+		CountSort(sortDataCopy);
+		end = chrono::high_resolution_clock::now();
+		runTime = end - start;
+		cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
+
+		sortDataCopy = sortDataOrig;
+		cout << "Radix Sort\nData Size: " << dataSize << endl;
+		start = chrono::high_resolution_clock::now();
+		RadixSort(sortDataCopy);
+		end = chrono::high_resolution_clock::now();
+		runTime = end - start;
+		cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
+
 	}
+
+	return 0;
 }
+
