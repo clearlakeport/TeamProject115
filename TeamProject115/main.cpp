@@ -1,5 +1,7 @@
 #include "sorting.h"
 
+const int SIZE = 1000;
+
 int main()
 {
 	for (int i = 0; i <= 3; i++)
