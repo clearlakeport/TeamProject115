@@ -1,12 +1,12 @@
 #include "sorting.h"
 
-const int SIZE = 1000;
 
 int main()
 {
-	for (int i = 0; i <= 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		int dataSize = SIZE * pow(10, i);
+		//int dataSize = 500;
 
 		vector<int> sortDataOrig, sortDataCopy;
 		chrono::high_resolution_clock::time_point start, end;
@@ -44,17 +44,18 @@ int main()
 		}
 
 
-		sortDataCopy = sortDataOrig;
-		cout << "Quick Sort\nData Size: " << dataSize << endl;
-		start = chrono::high_resolution_clock::now();
-		quickSort(sortDataCopy, 0, sortDataCopy.size() - 1);
-		end = chrono::high_resolution_clock::now();
-		runTime = end - start;
-		cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
 
 		cout << "Merge Sort\nData Size: " << dataSize << endl;
 		start = chrono::high_resolution_clock::now();
 		mergeSort(sortDataCopy, 0, sortDataCopy.size() - 1);
+		end = chrono::high_resolution_clock::now();
+		runTime = end - start;
+		cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
+
+		sortDataCopy = sortDataOrig;
+		cout << "Quick Sort\nData Size: " << dataSize << endl;
+		start = chrono::high_resolution_clock::now();
+		quickSort(sortDataCopy, 0, sortDataCopy.size() - 1);
 		end = chrono::high_resolution_clock::now();
 		runTime = end - start;
 		cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
