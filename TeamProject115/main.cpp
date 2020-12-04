@@ -3,10 +3,10 @@
 
 int main()
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 3; i++) // # of trials to run
 	{
-		int dataSize = SIZE * pow(10, i);
-		//int dataSize = 500;
+		int dataSize = SIZE; //change the size at sorting.h
+
 
 		vector<int> sortDataOrig, sortDataCopy;
 		chrono::high_resolution_clock::time_point start, end;
@@ -14,6 +14,10 @@ int main()
 
 
 		genData(dataSize, sortDataOrig);
+
+		//sort(sortDataOrig.begin(), sortDataOrig.end()); // ascending
+		sort(sortDataOrig.begin(), sortDataOrig.end(), greater<int>()); // descending
+		//sort(sortDataOrig.begin(), sortDataOrig.begin() + sortDataOrig.size() / 2);  // half sorted
 
 		if (dataSize <= 100000)
 		{

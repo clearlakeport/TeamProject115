@@ -12,7 +12,7 @@
 
 using namespace std;
 
-const int SIZE = 1000;
+const int SIZE = 100;
 
 void genData(int n, vector<int>& toRet);
 void insertionSort(vector<int>& userVector);
