@@ -1,64 +1,76 @@
 #include "sorting.h"
 
-void genData(int n, vector<int>& toRet) {
-
-	srand(time(NULL));
-	for (int i = 0; i < n; ++i) {
-		toRet.push_back(rand() % INT_MAX);
-	}
+Sorting::Sorting()
+{
+	dataSize = 100; 
+	userChoice = 99;
+	resetFlag = false;
+	runTime = std::chrono::seconds{ 0 };
 }
 
-void insertionSort(vector<int>& userVec)
+
+void Sorting::swap(int first, int second)
+{
+	int temp;
+
+	temp = sortDataCopy[first];
+	sortDataCopy[first] = sortDataCopy[second];
+	sortDataCopy[second] = temp;
+}
+
+void Sorting::insertionSort()
 {
 	int firstOutOfOrder, location;
-	int length = userVec.size(), temp;
+	int length = sortDataCopy.size(), temp;
 
 	for (firstOutOfOrder = 1; firstOutOfOrder < length; firstOutOfOrder++)
 	{
-		if (userVec[firstOutOfOrder] < userVec[firstOutOfOrder - 1])
+		if (sortDataCopy[firstOutOfOrder] < sortDataCopy[firstOutOfOrder - 1])
 		{
-			temp = userVec[firstOutOfOrder];
+			temp = sortDataCopy[firstOutOfOrder];
 			location = firstOutOfOrder;
 
 			do
 			{
-				userVec[location] = userVec[location - 1];
+				sortDataCopy[location] = sortDataCopy[location - 1];
 				location--;
-			} while (location > 0 && userVec[location - 1] > temp);
-			userVec[location] = temp;
+			} while (location > 0 && sortDataCopy[location - 1] > temp);
+			sortDataCopy[location] = temp;
 		}
 	}
 
 }
 
-void SelectionSort(vector<int>& userVec)
+void Sorting::SelectionSort()
 {
-	int smallest = 0, length = userVec.size(), holdData;
+	int smallest = 0, length = sortDataCopy.size();
 
 	for (int current = 0; current < length - 1; current++)
 	{
 		smallest = current;
 		for (int index = current + 1; index <= length - 1; index++)
 		{
-			if (userVec[index] < userVec[smallest])
+			if (sortDataCopy[index] < sortDataCopy[smallest])
 			{
-				swap(userVec[smallest], userVec[index]);
+				if (sortDataCopy[index] < sortDataCopy[smallest])
+					smallest = index;
 			}
 		}
+		swap(current, smallest);
 	}
 
 }
 
-void bubble(vector<int>& arr)
+void Sorting::bubble()
 {
 	bool flag = false;
-	int last = arr.size() - 1;
+	int last = sortDataCopy.size() - 1;
 
 	while (!flag) {
 		bool flag = true;
 		for (int i = 0; i < last; i++) {
-			if (arr[i] > arr[i + 1]) {
-				swap(arr[i], arr[i + 1]);
+			if (sortDataCopy[i] > sortDataCopy[i + 1]) {
+				swap(i, i+1);
 				flag = false;
 			}
 		}
@@ -68,7 +80,7 @@ void bubble(vector<int>& arr)
 	}
 }
 
-void merge(vector<int>& original, int left, int middle, int right) {
+void Sorting::merge(int left, int middle, int right) {
 
 	int i, j, k;
 
@@ -80,10 +92,10 @@ void merge(vector<int>& original, int left, int middle, int right) {
 
 
 	for (i = 0; i < arr1; i++)
-		fPtr[i] = original[left + i];
+		fPtr[i] = sortDataCopy[left + i];
 
 	for (j = 0; j < arr2; j++)
-		sPtr[j] = original[middle + 1 + j];
+		sPtr[j] = sortDataCopy[middle + 1 + j];
 
 	i = j = 0;
 	k = left;
@@ -92,12 +104,12 @@ void merge(vector<int>& original, int left, int middle, int right) {
 	{
 		if (fPtr[i] <= sPtr[j])
 		{
-			original[k] = fPtr[i];
+			sortDataCopy[k] = fPtr[i];
 			i++;
 		}
 		else
 		{
-			original[k] = sPtr[j];
+			sortDataCopy[k] = sPtr[j];
 			j++;
 		}
 		k++;
@@ -105,14 +117,14 @@ void merge(vector<int>& original, int left, int middle, int right) {
 
 	while (i < arr1)
 	{
-		original[k] = fPtr[i];
+		sortDataCopy[k] = fPtr[i];
 		k++;
 		i++;
 	}
 
 	while (j < arr2)
 	{
-		original[k] = sPtr[j];
+		sortDataCopy[k] = sPtr[j];
 		k++;
 		j++;
 	}
@@ -121,89 +133,105 @@ void merge(vector<int>& original, int left, int middle, int right) {
 	delete[] sPtr;
 }
 
-void mergeSort(vector<int>& userVector, int lo, int hi) {
+void Sorting::mergeSortHP(int lo, int hi) 
+{
 
 	if (lo < hi)
 	{
 		int mid = (lo + hi) / 2;
-		mergeSort(userVector, lo, mid);
-		mergeSort(userVector, mid + 1, hi);
-		merge(userVector, lo, mid, hi);
+		mergeSortHP(lo, mid);
+		mergeSortHP(mid + 1, hi);
+		merge(lo, mid, hi);
 	}
 }
 
-int partition(vector<int>& userVector, int low, int high)
+void Sorting::mergeSort()
 {
-	int pivot = userVector[low];
-	bool done = false;
-
-	int i = low + 1;
-	int j = high;
-
-	while (!done)
-	{
-		while (i <= j && userVector[i] <= pivot)
-			i++;
-		while (userVector[j] >= pivot && j >= i)
-			j--;
-		if (i > j)
-			done = true;
-		else
-			swap(userVector[i], userVector[j]);
-	}
-
-	swap(userVector[low], userVector[j]);
-
-	return j;
+	int high = sortDataCopy.size() - 1;
+	mergeSortHP(0, high);
 }
 
-void quickSort(vector<int>& userVector, int left, int right)
+
+void Sorting::quickSort()
 {
-	int p;
+	int right = sortDataCopy.size() - 1;
+	quickSortHP(0, right);
 
-	if (left < right)
-	{
-		p = partition(userVector, left, right);
-		quickSort(userVector, left, p - 1);
-		quickSort(userVector, p + 1, right);
-	}
 }
 
-void heapify(vector<int>& userVec, int n, int index)
+void Sorting::quickSortHP(int m, int n)
+{
+	int i, j, k;
+	int key;
+
+
+	if (m < n)
+	{
+		k = partition(m, n);
+		swap(m, k);
+		key = sortDataCopy[m];
+		i = m + 1;
+		j = n;
+
+		while (i <= j)
+		{
+			while ((i <= n) && (sortDataCopy[i] <= key))
+			{
+				i++;
+			}
+			while ((j >= m + 1) && (sortDataCopy[j] >= key))
+			{
+				j--;
+			}
+			if (i < j)
+			{
+				swap(i, j);
+			}
+		}
+		swap(m, j);
+
+		quickSortHP(m, j - 1);
+
+		quickSortHP(j + 1, n);
+	}
+	return;
+}
+
+void Sorting::heapify(int n, int index)
 {
 	int largest = index;
 	int left = 2 * index + 1;
 	int right = 2 * index + 2;
-	if (left < n && userVec[left] > userVec[largest])
+	if (left < n && sortDataCopy[left] > sortDataCopy[largest])
 		largest = left;
-	if (right < n && userVec[right] > userVec[largest])
+	if (right < n && sortDataCopy[right] > sortDataCopy[largest])
 		largest = right;
 	if (largest != index)
 	{
-		swap(userVec[index], userVec[largest]);
-		heapify(userVec, n, largest);
+		swap(index, largest);
+		heapify(n, largest);
 	}
 }
 
-void heapSort(vector<int>& userVector)
+void Sorting::heapSort()
 {
-	int n = userVector.size();
+	int size = sortDataCopy.size();
 
-	for (int i = n / 2 - 1; i >= 0; i--)
-		heapify(userVector, n, i);
+	for (int i = size / 2 - 1; i >= 0; i--)
+		heapify(size, i);
 
-	for (int i = n - 1; i >= 0; i--)
+	for (int i = size - 1; i >= 0; i--)
 	{
-		swap(userVector[0], userVector[i]);
-		heapify(userVector, i, 0);
+		swap(0, i);
+		heapify(i, 0);
 	}
 }
 
 
-void CountSort(vector<int>& userVec)
+void Sorting::CountSort()
 {
-	int size = userVec.size();
-	int max = *max_element(userVec.begin(), userVec.end());
+	int size = sortDataCopy.size();
+	int max = *max_element(sortDataCopy.begin(), sortDataCopy.end());
 	int* outArr = new int[size];
 	int* auxArr = new int[max + 1];
 
@@ -215,7 +243,7 @@ void CountSort(vector<int>& userVec)
 
 	for (int i = 0; i < size; i++)
 	{
-		auxArr[userVec[i]]++;
+		auxArr[sortDataCopy[i]]++;
 	}
 
 	for (int i = 1; i <= max; i++)
@@ -225,12 +253,12 @@ void CountSort(vector<int>& userVec)
 
 	for (int i = size - 1; i >= 0; i--)
 	{
-		outArr[--auxArr[userVec[i]]] = userVec[i];
+		outArr[--auxArr[sortDataCopy[i]]] = sortDataCopy[i];
 	}
 
 	for (int i = 0; i < size; i++)
 	{
-		userVec[i] = outArr[i];
+		sortDataCopy[i] = outArr[i];
 	}
 
 	delete[] outArr;
@@ -238,11 +266,11 @@ void CountSort(vector<int>& userVec)
 
 }
 
-void RadixSort(vector<int>& userVec)
+void Sorting::RadixSort()
 {
 	const int BASE = 10;
-	int size = userVec.size();
-	int max = *max_element(userVec.begin(), userVec.end());
+	int size = sortDataCopy.size();
+	int max = *max_element(sortDataCopy.begin(), sortDataCopy.end());
 
 	int numDigits = 1, tmp = 10;
 	while (max / tmp > 0)
@@ -261,7 +289,7 @@ void RadixSort(vector<int>& userVec)
 
 		for (int j = 0; j < size; j++)
 		{
-			auxArr[userVec[j] / pos % 10]++;
+			auxArr[sortDataCopy[j] / pos % 10]++;
 		}
 
 		for (int j = 1; j < BASE; j++)
@@ -272,17 +300,132 @@ void RadixSort(vector<int>& userVec)
 
 		for (int j = size - 1; j >= 0; j--)
 		{
-			outArr[--auxArr[userVec[j] / pos % 10]] = userVec[j];
+			outArr[--auxArr[sortDataCopy[j] / pos % 10]] = sortDataCopy[j];
 		}
 
 
 		for (int i = 0; i < size; i++)
 		{
-			userVec[i] = outArr[i];
+			sortDataCopy[i] = outArr[i];
 		}
 
 		pos *= 10;
 	}
 
 	delete[] outArr;
+}
+
+void Sorting::printChoice()
+{
+	switch (userChoice)
+	{
+	case 1:	cout << "Insertion Sort" << endl;
+		break;
+	case 2:	cout << "Selection Sort" << endl;
+		break;
+	case 3:	cout << "Bubble Sort" << endl;
+		break;
+	case 4:	cout << "Merge Sort" << endl;
+		break;
+	case 5:	cout << "Quick Sort" << endl;
+		break;
+	case 6:	cout << "Heap Sort" << endl;
+		break;
+	case 7:	cout << "Counting Sort" << endl;
+		break;
+	case 8:	cout << "Radix Sort" << endl;
+		break;
+	case 9:	system("cls");
+		break;
+	default:	if (userChoice == 0)
+		return;
+	}
+}
+
+void Sorting::startChoice()
+{
+	sortDataCopy = sortDataOrig;
+	printChoice();
+	cout << "Data Size: " << dataSize << endl;
+	start = chrono::high_resolution_clock::now();
+
+}
+
+void Sorting::endChoice()
+{
+	char choice;
+
+	if (!resetFlag)
+	{
+		end = chrono::high_resolution_clock::now();
+		runTime = end - start;
+		cout << "Time elapsed: " << runTime.count() << " seconds\n\n";
+
+		cin.ignore();
+		cout << "Display Sorted Data? (Y/N)";
+		choice = getchar();
+		if (choice == 'Y' || choice == 'y')
+			outputSorted();
+
+		sortDataCopy.clear();
+
+		cout << "Press any key to continoue";
+		(void)_getch();
+		system("cls");
+
+	}
+	
+}
+void Sorting::getSize()
+{
+	int size;
+
+	cout << "Insert size of data to be sorted:\n";
+	cin >> size;
+	dataSize = size;
+	system("cls");
+
+}
+
+// generate randomized integers of datasize 
+void Sorting::genData()
+{
+	for (int i = 0; i < dataSize; ++i)
+	{
+		sortDataOrig.push_back(rand() % INT_MAX);
+	}
+}
+
+int Sorting::getChoice()
+{
+	int choice;
+
+	cout << "Data size: " << dataSize << endl;
+	cout << "1: Insertion\n2: Selection\n3: Bubble\n4: Merge\n5: Quick\n6: Heap\n7: Counting\n8: Radix\n9: Change Data\n0: Exit\n";
+	cin >> choice;
+
+	userChoice = choice;
+	resetFlag = false;
+
+	return choice;
+}
+
+void Sorting::outputSorted()
+{
+	cout << "Sorted Data: " << endl;
+
+	for (auto itr = sortDataCopy.begin(); itr != sortDataCopy.end(); itr++)
+	{
+		cout << *itr << "  ";
+	}
+	cout << endl;
+}
+
+void Sorting::reset()
+{
+	sortDataCopy.clear();
+	sortDataOrig.clear();
+	getSize();
+	genData();
+	resetFlag = true;
 }

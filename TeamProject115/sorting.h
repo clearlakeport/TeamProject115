@@ -14,18 +14,41 @@ using namespace std;
 
 const int SIZE = 100;
 
-void genData(int n, vector<int>& toRet);
-void insertionSort(vector<int>& userVector);
-void SelectionSort(vector<int>& userVector);
-void bubble(vector<int>& arr);
-void merge(vector<int>& original, int left, int middle, int right);
-void mergeSort(vector<int>& userVector, int lo, int hi);
-int partition(vector<int>& userVector, int low, int high);
-void quickSort(vector<int>& userVector, int left, int right);
-void heapify(vector<int>& userVec, int n, int index);
-void heapSort(vector<int>& userVector);
-void CountSort(vector<int>& userVector);
-void RadixSort(vector<int>& userVector);
+class Sorting {
+public:
+   Sorting();
+   void genData();
+   void insertionSort();
+   void SelectionSort();
+   void bubble();
+   void merge(int left, int middle, int right);
+   void mergeSort();
+   void quickSort();
+   void heapify(int size, int i);
+   void heapSort();
+   void CountSort();
+   void RadixSort();
+   void startChoice();
+   void endChoice();
+   int getChoice(); 
+   void getSize();
+   void outputSorted();
+   void reset();
+
+private:
+   int dataSize; 
+   int userChoice;
+   bool resetFlag;
+   vector<int> sortDataOrig, sortDataCopy;
+   chrono::high_resolution_clock::time_point start, end;
+   chrono::duration<double> runTime;
+
+   void mergeSortHP(int low, int high);
+   int partition(int i, int j) { return ((i + j) / 2); }
+   void quickSortHP(int m, int n);
+   void swap(int first, int second);
+   void printChoice();
+};
 
 #endif
 
