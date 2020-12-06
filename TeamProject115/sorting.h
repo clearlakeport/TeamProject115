@@ -8,43 +8,50 @@
 #include <chrono>
 #include <conio.h>
 #include <algorithm>
-#include "sorting.h"
 
 using namespace std;
 
-const int SIZE = 100;
+//smallest to get reasonable timing
+const int SIZE = 1000;
 
-class Sorting {
+class Sorting
+{
 public:
    Sorting();
+   //allows user defined data to be passed
+   //not used in our program this time
+   Sorting(vector<int> &iVec);
    void genData();
    void insertionSort();
    void SelectionSort();
    void bubble();
-   void merge(int left, int middle, int right);
    void mergeSort();
    void quickSort();
-   void heapify(int size, int i);
    void heapSort();
    void CountSort();
    void RadixSort();
+   //UI functions
    void startChoice();
    void endChoice();
-   int getChoice(); 
+   int getChoice();
    void getSize();
    void outputSorted();
    void reset();
+   //used for generating different types of data sets for our report
+   void modifyVec(int c);
 
 private:
-   int dataSize; 
+   int dataSize;
    int userChoice;
    bool resetFlag;
    vector<int> sortDataOrig, sortDataCopy;
-   chrono::high_resolution_clock::time_point start, end;
+   chrono::high_resolution_clock::time_point startT, endT;
    chrono::duration<double> runTime;
-
+   //helper functions
    void mergeSortHP(int low, int high);
-   int partition(int i, int j) { return ((i + j) / 2); }
+   void heapify(int size, int i);
+   void merge(int left, int middle, int right);
+   int pivot(int i, int j);
    void quickSortHP(int m, int n);
    void swap(int first, int second);
    void printChoice();
